@@ -27,7 +27,7 @@ Built to pull items from a JSON or OData-style API into an EE channel on a recur
 
 1. Copy `system/user/addons/reizoko_jsongrab` into your EE install's `system/user/addons/`
 2. Install via the CP (Add-Ons) or `php eecli.php addons:install reizoko_jsongrab`
-3. Add-Ons → Reizoko JsonGrab → New Import
+3. Add-Ons → JsonGrab → New Import
 
 ## Limitations
 

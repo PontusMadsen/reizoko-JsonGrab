@@ -190,14 +190,14 @@ class Reizoko_jsongrab_mcp
             'imports' => $imports,
             'channels' => $channels,
             'base_url' => $this->base_url,
-            'cp_page_title' => 'Reizoko JsonGrab Imports',
+            'cp_page_title' => 'JsonGrab Imports',
         ];
 
         return [
-            'heading' => 'Reizoko JsonGrab Imports',
+            'heading' => 'JsonGrab Imports',
             'body' => ee('View')->make('reizoko_jsongrab:index')->render($vars),
             'breadcrumb' => [
-                $this->base_url->compile() => 'Reizoko JsonGrab',
+                $this->base_url->compile() => 'JsonGrab',
             ],
         ];
     }
@@ -259,7 +259,7 @@ class Reizoko_jsongrab_mcp
             'heading' => $vars['cp_page_title'],
             'body' => ee('View')->make('reizoko_jsongrab:form')->render($vars),
             'breadcrumb' => [
-                $this->base_url->compile() => 'Reizoko JsonGrab',
+                $this->base_url->compile() => 'JsonGrab',
             ],
         ];
     }

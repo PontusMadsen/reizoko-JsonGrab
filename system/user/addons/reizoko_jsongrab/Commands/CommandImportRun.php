@@ -7,7 +7,7 @@ use Reizoko\JsonGrab\Model\Importer;
 
 class CommandImportRun extends Cli
 {
-    public $name = 'Run Reizoko JsonGrab Import';
+    public $name = 'Run JsonGrab Import';
     public $signature = 'reizoko_jsongrab:run';
     public $usage = 'php eecli.php reizoko_jsongrab:run --id=<import_id>';
     public $commandOptions = ['--id'];

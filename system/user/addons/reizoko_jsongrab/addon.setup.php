@@ -3,7 +3,7 @@
 return array(
     'author'         => 'Pontus Madsen',
     'author_url'     => '',
-    'name'           => 'Reizoko JsonGrab',
+    'name'           => 'JsonGrab',
     'description'    => 'Import channel entries from a JSON API endpoint.',
     'version'        => '1.0.0',
     'namespace'      => 'Reizoko\JsonGrab',
