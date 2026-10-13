@@ -1,4 +1,4 @@
-# reizoko-JsonGrab
+# JsonGrab
 
 A CP-only ExpressionEngine 7 add-on that imports channel entries from a JSON API endpoint.
 
