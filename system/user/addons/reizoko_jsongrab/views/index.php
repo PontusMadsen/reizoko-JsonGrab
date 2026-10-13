@@ -23,7 +23,7 @@ table.jg-table tr:last-child td { border-bottom: none; }
 .jg-progress.is-on { visibility: visible; }
 .jg-bar { flex: 0 0 90px; height: 6px; border-radius: 3px; background: rgba(93,99,241,0.18); overflow: hidden; }
 .jg-fill { height: 100%; width: 0; background: #5D63F1; transition: width .25s ease-out; }
-.jg-count { min-width: 60px; font-size: 12px; font-variant-numeric: tabular-nums; color: #8f90b6; }
+.jg-count { min-width: 66px; font-size: 12px; font-variant-numeric: tabular-nums; color: #8f90b6; }
 .jg-empty { padding: 24px; text-align: center; color: #8f90b6; }
 </style>
 
@@ -138,6 +138,7 @@ document.querySelectorAll('form.jg-run-form').forEach(function (form) {
 
 					if (!res.done) { return step(res.next_offset); }
 
+					count.textContent = 'Completed';
 					setLastRun('Just now', 'Created ' + totals.created + ', updated ' + totals.updated + ', ' + totals.error_count + ' error(s).'
 						+ (errors.length ? ' ' + errors.slice(0, 5).join(' | ') : ''));
 					button.disabled = false;
