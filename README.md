@@ -2,6 +2,8 @@
 
 A CP-only ExpressionEngine 7 add-on that imports channel entries from a JSON API endpoint.
 
+Part of the [Reizoko add-ons](https://www.reizoko.jp/en/addons.html).
+
 Built to pull items from a JSON or OData-style API into an EE channel on a recurring schedule, without the CSV/XML/WordPress import machinery a general-purpose tool like DataGrab carries.
 
 ## Features
@@ -14,11 +16,24 @@ Built to pull items from a JSON or OData-style API into an EE channel on a recur
 - Manual "Run" button in the CP, plus `php eecli.php reizoko_jsongrab:run --id=<n>` for cron
 - Basic Auth credentials can live in `system/user/config/reizoko_jsongrab.env.php` (kept out of the database and the CP entirely) or, less safely but more convenient, directly on the import
 
+## Requirements
+
+- ExpressionEngine 7
+- PHP 8.1 or newer
+- PHP cURL extension
+
 ## Install
 
 1. Copy `system/user/addons/reizoko_jsongrab` into your EE install's `system/user/addons/`
 2. Install via the CP (Add-Ons) or `php eecli.php addons:install reizoko_jsongrab`
 3. Add-Ons → Reizoko JsonGrab → New Import
+
+## Limitations
+
+- Fetches the URL once; paginated APIs are not followed
+- Imports never delete or unpublish entries that disappear from the feed
+- New entries are created on site ID 1 (no MSM site selection)
+- Only a single custom HTTP header line is supported
 
 ## Credentials file
 
