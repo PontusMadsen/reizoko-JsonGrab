@@ -1,16 +1,13 @@
 <style>
-.jg-wrap { max-width: 1000px; }
+.jg-wrap { width: 100%; }
 .jg-actions { margin-bottom: 20px; }
 .jg-actions a.button { background: #5D63F1; color: #fff; border: none; padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; text-decoration: none; display: inline-block; }
 .jg-actions a.button:hover { background: #4a50d4; }
 table.jg-table { width: 100%; border-collapse: collapse; background: var(--ee-panel-bg, #fff); border: 1px solid var(--ee-panel-border, #dfe0ef); border-radius: 6px; overflow: hidden; }
 table.jg-table th, table.jg-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--ee-panel-border, #dfe0ef); font-size: 14px; vertical-align: top; }
 table.jg-table th { font-weight: 600; background: rgba(0,0,0,0.02); }
-table.jg-table { table-layout: fixed; }
-table.jg-table th:nth-child(2) { width: 130px; }
-table.jg-table th:nth-child(3) { width: 210px; }
-table.jg-table th:nth-child(4) { width: 350px; }
-table.jg-table td:first-child { overflow-wrap: anywhere; }
+table.jg-table th:nth-child(n+2), table.jg-table td:nth-child(n+2) { width: 1%; white-space: nowrap; }
+table.jg-table td:first-child { overflow-wrap: anywhere; min-width: 180px; }
 table.jg-table tr:last-child td { border-bottom: none; }
 .jg-summary { font-size: 0.85em; color: #8f90b6; }
 .jg-btns { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; }
