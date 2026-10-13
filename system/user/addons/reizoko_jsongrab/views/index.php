@@ -10,7 +10,7 @@ table.jg-table th:nth-child(n+2), table.jg-table td:nth-child(n+2) { width: 1%; 
 table.jg-table td:first-child { overflow-wrap: anywhere; min-width: 180px; }
 table.jg-table tr:last-child td { border-bottom: none; }
 .jg-summary { font-size: 0.85em; color: #8f90b6; }
-.jg-btns { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; }
+.jg-btns { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: nowrap; white-space: nowrap; }
 .jg-btns form { margin: 0; }
 .jg-btn { display: inline-block; box-sizing: border-box; font: inherit; font-size: 13px; font-weight: 500; line-height: 1; padding: 7px 14px; border-radius: 4px; border: 1px solid var(--ee-panel-border, #dfe0ef); background: transparent; color: var(--ee-text-primary, #0d0d19); text-decoration: none; cursor: pointer; transition: background-color .15s, border-color .15s; }
 .jg-btn:hover { background: rgba(93,99,241,0.08); border-color: #5D63F1; }
@@ -19,7 +19,7 @@ table.jg-table tr:last-child td { border-bottom: none; }
 .jg-btn-run:disabled { opacity: .55; cursor: default; background: #5D63F1; border-color: #5D63F1; }
 .jg-btn-delete { color: #c0392b; }
 .jg-btn-delete:hover { background: rgba(192,57,43,0.08); border-color: #c0392b; }
-.jg-progress { display: flex; align-items: center; gap: 10px; margin-left: 8px; visibility: hidden; }
+.jg-progress { display: flex; align-items: center; gap: 10px; margin-right: 8px; visibility: hidden; }
 .jg-progress.is-on { visibility: visible; }
 .jg-bar { flex: 0 0 90px; height: 6px; border-radius: 3px; background: rgba(93,99,241,0.18); overflow: hidden; }
 .jg-fill { height: 100%; width: 0; background: #5D63F1; transition: width .25s ease-out; }
@@ -59,6 +59,10 @@ table.jg-table tr:last-child td { border-bottom: none; }
 			</td>
 			<td class="jg-row-actions">
 				<div class="jg-btns">
+					<div class="jg-progress">
+						<div class="jg-bar"><div class="jg-fill"></div></div>
+						<span class="jg-count"></span>
+					</div>
 					<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run/' . $import->import_id), [
 						'class' => 'jg-run-form',
 						'data-chunk-url' => ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run_chunk/' . $import->import_id)->compile(),
@@ -69,10 +73,6 @@ table.jg-table tr:last-child td { border-bottom: none; }
 					<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/delete/' . $import->import_id)) ?>
 						<button type="submit" class="jg-btn jg-btn-delete" onclick="return confirm('Delete this import?')">Delete</button>
 					<?= form_close() ?>
-					<div class="jg-progress">
-						<div class="jg-bar"><div class="jg-fill"></div></div>
-						<span class="jg-count"></span>
-					</div>
 				</div>
 			</td>
 		</tr>
