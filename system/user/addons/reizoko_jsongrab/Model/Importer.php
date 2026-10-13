@@ -4,13 +4,20 @@ namespace Reizoko\JsonGrab\Model;
 
 class Importer
 {
+    /** Entries saved per request when the CP drives an import in chunks. */
+    const CHUNK_SIZE = 25;
+
     /**
      * Run a saved import config against its JSON endpoint.
      *
+     * With $offset/$limit only that slice of items is saved, so a large
+     * feed can be imported over several requests instead of one that hits
+     * PHP's time limit. The endpoint is re-fetched on every call.
+     *
      * @param object $import Row from exp_reizoko_jsongrab_imports (as stdClass/array-ish with property access)
-     * @return array Summary: ['created' => int, 'updated' => int, 'errors' => array]
+     * @return array Summary: ['created', 'updated', 'errors', 'total', 'next_offset', 'done']
      */
-    public function run($import)
+    public function run($import, $offset = 0, $limit = null)
     {
         $useBasicAuth = !empty($import->use_basic_auth) && $import->use_basic_auth === 'y';
         $json = $this->fetch($import->url, $import->http_header, $useBasicAuth, $import);
@@ -34,7 +41,10 @@ class Importer
         $updated = 0;
         $errors = [];
 
-        foreach ($items as $index => $item) {
+        $total = count($items);
+        $slice = array_slice($items, $offset, $limit, true);
+
+        foreach ($slice as $index => $item) {
             try {
                 $result = $this->importItem($import, $item, $fieldMap);
                 if ($result === 'created') {
@@ -47,10 +57,15 @@ class Importer
             }
         }
 
+        $nextOffset = $offset + count($slice);
+
         return [
             'created' => $created,
             'updated' => $updated,
             'errors' => $errors,
+            'total' => $total,
+            'next_offset' => $nextOffset,
+            'done' => $nextOffset >= $total,
         ];
     }
 

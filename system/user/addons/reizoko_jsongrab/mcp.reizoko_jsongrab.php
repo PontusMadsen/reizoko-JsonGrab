@@ -387,6 +387,41 @@ class Reizoko_jsongrab_mcp
         ee()->functions->redirect($this->base_url);
     }
 
+    /**
+     * AJAX: save one chunk of an import. The CP posts the running totals
+     * back so the last-run summary can be written when the final chunk lands.
+     */
+    public function run_chunk($import_id)
+    {
+        $import = ee()->db->where('import_id', $import_id)->get('reizoko_jsongrab_imports')->row();
+
+        if (!$import) {
+            ee()->output->send_ajax_response(['error' => 'Import not found.']);
+        }
+
+        $offset = max(0, (int) ee()->input->post('offset'));
+
+        try {
+            $result = (new Importer())->run($import, $offset, Importer::CHUNK_SIZE);
+        } catch (\Exception $e) {
+            ee()->output->send_ajax_response(['error' => $e->getMessage()]);
+        }
+
+        if ($result['done']) {
+            ee()->db->where('import_id', $import_id)->update('reizoko_jsongrab_imports', [
+                'last_run_date' => time(),
+                'last_run_summary' => sprintf(
+                    'Created %d, updated %d, %d error(s).',
+                    (int) ee()->input->post('created') + $result['created'],
+                    (int) ee()->input->post('updated') + $result['updated'],
+                    (int) ee()->input->post('error_count') + count($result['errors'])
+                ),
+            ]);
+        }
+
+        ee()->output->send_ajax_response($result);
+    }
+
     private function channelNames()
     {
         $channels = ee('Model')->get('Channel')->all();

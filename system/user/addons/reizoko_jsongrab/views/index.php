@@ -43,8 +43,13 @@ table.jg-table tr:last-child td { border-bottom: none; }
 				<?php endif; ?>
 			</td>
 			<td class="jg-row-actions">
-				<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run/' . $import->import_id), ['style' => 'display:inline']) ?>
+				<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run/' . $import->import_id), [
+					'style' => 'display:inline',
+					'class' => 'jg-run-form',
+					'data-chunk-url' => ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run_chunk/' . $import->import_id)->compile(),
+				]) ?>
 					<button type="submit" style="background:none;border:none;color:#5D63F1;cursor:pointer;padding:0;font-size:13px;">Run</button>
+					<span class="jg-run-status jg-summary"></span>
 				<?= form_close() ?>
 				<a href="<?= ee('CP/URL')->make('addons/settings/reizoko_jsongrab/edit/' . $import->import_id) ?>">Edit</a>
 				<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/delete/' . $import->import_id), ['style' => 'display:inline']) ?>
@@ -56,3 +61,55 @@ table.jg-table tr:last-child td { border-bottom: none; }
 	</table>
 	<?php endif; ?>
 </div>
+
+<script>
+document.querySelectorAll('form.jg-run-form').forEach(function (form) {
+	form.addEventListener('submit', function (e) {
+		e.preventDefault();
+
+		var button = form.querySelector('button');
+		var status = form.querySelector('.jg-run-status');
+		var totals = { created: 0, updated: 0, error_count: 0 };
+		var errors = [];
+
+		button.disabled = true;
+		status.textContent = 'Starting…';
+
+		function fail(message) {
+			status.textContent = 'Failed: ' + message;
+			button.disabled = false;
+		}
+
+		function step(offset) {
+			var data = new FormData(form);
+			data.append('offset', offset);
+			data.append('created', totals.created);
+			data.append('updated', totals.updated);
+			data.append('error_count', totals.error_count);
+
+			fetch(form.dataset.chunkUrl, { method: 'POST', body: data, credentials: 'same-origin' })
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					if (res.error) { return fail(res.error); }
+
+					totals.created += res.created;
+					totals.updated += res.updated;
+					totals.error_count += res.errors.length;
+					errors = errors.concat(res.errors);
+
+					if (!res.done) {
+						status.textContent = res.next_offset + ' / ' + res.total;
+						return step(res.next_offset);
+					}
+
+					status.textContent = 'Created ' + totals.created + ', updated ' + totals.updated + ', ' + totals.error_count + ' error(s).'
+						+ (errors.length ? ' ' + errors.slice(0, 5).join(' | ') : '');
+					button.disabled = false;
+				})
+				.catch(function (err) { fail(err.message); });
+		}
+
+		step(0);
+	});
+});
+</script>
