@@ -1,4 +1,4 @@
-# JsonGrab
+# reizoko-JsonGrab
 
 A CP-only ExpressionEngine 7 add-on that imports channel entries from a JSON API endpoint.
 
@@ -11,18 +11,18 @@ Built to pull items from a JSON or OData-style API into an EE channel on a recur
 - Field mapping UI mirrors the channel's real Publish Layout — same tabs, same order, dropdowns fed by a live "Load Sample Data" preview instead of typed JSON paths
 - Structured field types (Grid, Matrix, relationships, files) are intentionally excluded from mapping — a single JSON path can't populate those
 - Match-and-update on re-import by Title or URL Title, or always create new entries
-- Manual "Run" button in the CP, plus `php eecli.php jsongrab:run --id=<n>` for cron
-- Basic Auth credentials can live in `system/user/config/jsongrab.env.php` (kept out of the database and the CP entirely) or, less safely but more convenient, directly on the import
+- Manual "Run" button in the CP, plus `php eecli.php reizoko_jsongrab:run --id=<n>` for cron
+- Basic Auth credentials can live in `system/user/config/reizoko_jsongrab.env.php` (kept out of the database and the CP entirely) or, less safely but more convenient, directly on the import
 
 ## Install
 
-1. Copy `system/user/addons/jsongrab` into your EE install's `system/user/addons/`
-2. Install via the CP (Add-Ons) or `php eecli.php addons:install jsongrab`
-3. Add-Ons → JsonGrab → New Import
+1. Copy `system/user/addons/reizoko_jsongrab` into your EE install's `system/user/addons/`
+2. Install via the CP (Add-Ons) or `php eecli.php addons:install reizoko_jsongrab`
+3. Add-Ons → Reizoko JsonGrab → New Import
 
 ## Credentials file
 
-For Basic Auth kept out of the database, create `system/user/config/jsongrab.env.php`:
+For Basic Auth kept out of the database, create `system/user/config/reizoko_jsongrab.env.php`:
 
 ```php
 <?php

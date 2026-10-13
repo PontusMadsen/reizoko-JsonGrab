@@ -7,16 +7,16 @@ use Reizoko\JsonGrab\Model\Importer;
 
 class CommandImportRun extends Cli
 {
-    public $name = 'Run JsonGrab Import';
-    public $signature = 'jsongrab:run';
-    public $usage = 'php eecli.php jsongrab:run --id=<import_id>';
+    public $name = 'Run Reizoko JsonGrab Import';
+    public $signature = 'reizoko_jsongrab:run';
+    public $usage = 'php eecli.php reizoko_jsongrab:run --id=<import_id>';
     public $commandOptions = ['--id'];
 
     public function handle()
     {
         $importId = (int) $this->getOptionOrAsk('--id', 'Which import id do you want to run?', '', true);
 
-        $row = ee()->db->where('import_id', $importId)->get('jsongrab_imports')->row();
+        $row = ee()->db->where('import_id', $importId)->get('reizoko_jsongrab_imports')->row();
 
         if (!$row) {
             $this->fail("No import found with id {$importId}");
@@ -32,7 +32,7 @@ class CommandImportRun extends Cli
             return;
         }
 
-        ee()->db->where('import_id', $importId)->update('jsongrab_imports', [
+        ee()->db->where('import_id', $importId)->update('reizoko_jsongrab_imports', [
             'last_run_date' => time(),
             'last_run_summary' => sprintf(
                 'Created %d, updated %d, %d error(s)',

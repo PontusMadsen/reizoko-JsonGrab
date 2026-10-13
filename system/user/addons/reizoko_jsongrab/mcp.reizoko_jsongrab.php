@@ -2,7 +2,7 @@
 
 use Reizoko\JsonGrab\Model\Importer;
 
-class Jsongrab_mcp
+class Reizoko_jsongrab_mcp
 {
     // Field types that hold structured/multi-row data (a grid of rows, a
     // matrix, related entries, files, etc.) rather than a single scalar
@@ -19,7 +19,7 @@ class Jsongrab_mcp
 
     public function __construct()
     {
-        $this->base_url = ee('CP/URL')->make('addons/settings/jsongrab');
+        $this->base_url = ee('CP/URL')->make('addons/settings/reizoko_jsongrab');
     }
 
     public function preview()
@@ -36,7 +36,7 @@ class Jsongrab_mcp
         // whatever was already saved so preview works without retyping it.
         $import_id = ee()->input->post('import_id');
         if ($import_id && $import->basic_auth_pass === '') {
-            $existing = ee()->db->where('import_id', $import_id)->get('jsongrab_imports')->row();
+            $existing = ee()->db->where('import_id', $import_id)->get('reizoko_jsongrab_imports')->row();
             if ($existing) {
                 $import->basic_auth_user = $import->basic_auth_user !== '' ? $import->basic_auth_user : $existing->basic_auth_user;
                 $import->basic_auth_pass = $existing->basic_auth_pass;
@@ -183,21 +183,21 @@ class Jsongrab_mcp
 
     public function index()
     {
-        $imports = ee()->db->order_by('name', 'asc')->get('jsongrab_imports')->result();
+        $imports = ee()->db->order_by('name', 'asc')->get('reizoko_jsongrab_imports')->result();
         $channels = $this->channelNames();
 
         $vars = [
             'imports' => $imports,
             'channels' => $channels,
             'base_url' => $this->base_url,
-            'cp_page_title' => 'JsonGrab Imports',
+            'cp_page_title' => 'Reizoko JsonGrab Imports',
         ];
 
         return [
-            'heading' => 'JsonGrab Imports',
-            'body' => ee('View')->make('jsongrab:index')->render($vars),
+            'heading' => 'Reizoko JsonGrab Imports',
+            'body' => ee('View')->make('reizoko_jsongrab:index')->render($vars),
             'breadcrumb' => [
-                $this->base_url->compile() => 'JsonGrab',
+                $this->base_url->compile() => 'Reizoko JsonGrab',
             ],
         ];
     }
@@ -225,7 +225,7 @@ class Jsongrab_mcp
         $import = null;
 
         if ($import_id) {
-            $import = ee()->db->where('import_id', $import_id)->get('jsongrab_imports')->row();
+            $import = ee()->db->where('import_id', $import_id)->get('reizoko_jsongrab_imports')->row();
 
             if (!$import) {
                 show_404();
@@ -250,16 +250,16 @@ class Jsongrab_mcp
             'members' => ee('Model')->get('Member')->order('screen_name', 'asc')->all(),
             'base_url' => $this->base_url,
             'form_url' => $import_id
-                ? ee('CP/URL')->make('addons/settings/jsongrab/edit/' . $import_id)
-                : ee('CP/URL')->make('addons/settings/jsongrab/create'),
+                ? ee('CP/URL')->make('addons/settings/reizoko_jsongrab/edit/' . $import_id)
+                : ee('CP/URL')->make('addons/settings/reizoko_jsongrab/create'),
             'cp_page_title' => $import ? 'Edit Import' : 'New Import',
         ];
 
         return [
             'heading' => $vars['cp_page_title'],
-            'body' => ee('View')->make('jsongrab:form')->render($vars),
+            'body' => ee('View')->make('reizoko_jsongrab:form')->render($vars),
             'breadcrumb' => [
-                $this->base_url->compile() => 'JsonGrab',
+                $this->base_url->compile() => 'Reizoko JsonGrab',
             ],
         ];
     }
@@ -296,7 +296,7 @@ class Jsongrab_mcp
 
         // Leave the password field blank on edit to keep the saved value.
         if ($import_id && $data['basic_auth_pass'] === '') {
-            $existing = ee()->db->where('import_id', $import_id)->get('jsongrab_imports')->row();
+            $existing = ee()->db->where('import_id', $import_id)->get('reizoko_jsongrab_imports')->row();
             if ($existing) {
                 $data['basic_auth_user'] = $data['basic_auth_user'] !== '' ? $data['basic_auth_user'] : $existing->basic_auth_user;
                 $data['basic_auth_pass'] = $existing->basic_auth_pass;
@@ -304,7 +304,7 @@ class Jsongrab_mcp
         }
 
         if (empty($data['name']) || empty($data['url']) || empty($data['channel_id']) || empty($data['title_json_path'])) {
-            ee('CP/Alert')->makeBanner('jsongrab')
+            ee('CP/Alert')->makeBanner('reizoko_jsongrab')
                 ->asIssue()
                 ->withTitle('Missing required fields')
                 ->addToBody('Name, URL, Channel, and Title JSON Path are all required.')
@@ -314,12 +314,12 @@ class Jsongrab_mcp
         }
 
         if ($import_id) {
-            ee()->db->where('import_id', $import_id)->update('jsongrab_imports', $data);
+            ee()->db->where('import_id', $import_id)->update('reizoko_jsongrab_imports', $data);
         } else {
-            ee()->db->insert('jsongrab_imports', $data);
+            ee()->db->insert('reizoko_jsongrab_imports', $data);
         }
 
-        ee('CP/Alert')->makeBanner('jsongrab')
+        ee('CP/Alert')->makeBanner('reizoko_jsongrab')
             ->asSuccess()
             ->withTitle('Saved')
             ->addToBody('Import configuration saved.')
@@ -330,9 +330,9 @@ class Jsongrab_mcp
 
     public function delete($import_id)
     {
-        ee()->db->where('import_id', $import_id)->delete('jsongrab_imports');
+        ee()->db->where('import_id', $import_id)->delete('reizoko_jsongrab_imports');
 
-        ee('CP/Alert')->makeBanner('jsongrab')
+        ee('CP/Alert')->makeBanner('reizoko_jsongrab')
             ->asSuccess()
             ->withTitle('Deleted')
             ->addToBody('Import configuration deleted.')
@@ -343,7 +343,7 @@ class Jsongrab_mcp
 
     public function run($import_id)
     {
-        $import = ee()->db->where('import_id', $import_id)->get('jsongrab_imports')->row();
+        $import = ee()->db->where('import_id', $import_id)->get('reizoko_jsongrab_imports')->row();
 
         if (!$import) {
             show_404();
@@ -361,12 +361,12 @@ class Jsongrab_mcp
                 count($summary['errors'])
             );
 
-            ee()->db->where('import_id', $import_id)->update('jsongrab_imports', [
+            ee()->db->where('import_id', $import_id)->update('reizoko_jsongrab_imports', [
                 'last_run_date' => time(),
                 'last_run_summary' => $summaryText,
             ]);
 
-            $alert = ee('CP/Alert')->makeBanner('jsongrab')
+            $alert = ee('CP/Alert')->makeBanner('reizoko_jsongrab')
                 ->asSuccess()
                 ->withTitle('Import complete')
                 ->addToBody($summaryText);
@@ -377,7 +377,7 @@ class Jsongrab_mcp
 
             $alert->defer();
         } catch (\Exception $e) {
-            ee('CP/Alert')->makeBanner('jsongrab')
+            ee('CP/Alert')->makeBanner('reizoko_jsongrab')
                 ->asIssue()
                 ->withTitle('Import failed')
                 ->addToBody($e->getMessage())

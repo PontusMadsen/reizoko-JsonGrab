@@ -7,7 +7,7 @@ class Importer
     /**
      * Run a saved import config against its JSON endpoint.
      *
-     * @param object $import Row from exp_jsongrab_imports (as stdClass/array-ish with property access)
+     * @param object $import Row from exp_reizoko_jsongrab_imports (as stdClass/array-ish with property access)
      * @return array Summary: ['created' => int, 'updated' => int, 'errors' => array]
      */
     public function run($import)
@@ -195,7 +195,7 @@ class Importer
 
     /**
      * Fetch a URL, optionally with a single "Header-Name: value" line and/or
-     * HTTP Basic Auth using credentials from jsongrab.env.php.
+     * HTTP Basic Auth using credentials from reizoko_jsongrab.env.php.
      */
     private function fetch($url, $header = null, $useBasicAuth = false, $import = null)
     {
@@ -235,7 +235,7 @@ class Importer
     /**
      * Resolve Basic Auth credentials. Per-import credentials saved on the
      * import row take priority (less safe — stored in the DB — but kept as
-     * an option); otherwise falls back to system/user/config/jsongrab.env.php.
+     * an option); otherwise falls back to system/user/config/reizoko_jsongrab.env.php.
      */
     private function basicAuthCredentials($import = null)
     {
@@ -243,7 +243,7 @@ class Importer
             return ['user' => trim($import->basic_auth_user), 'pass' => trim($import->basic_auth_pass)];
         }
 
-        $path = SYSPATH . 'user/config/jsongrab.env.php';
+        $path = SYSPATH . 'user/config/reizoko_jsongrab.env.php';
 
         if (!file_exists($path)) {
             throw new \RuntimeException('Basic Auth requested but no credentials were saved on the import and ' . $path . ' does not exist.');
@@ -254,7 +254,7 @@ class Importer
         $pass = trim($env['JSONGRAB_API_PASS'] ?? '');
 
         if ($user === '' || $pass === '') {
-            throw new \RuntimeException('No credentials saved on the import, and JSONGRAB_API_USER / JSONGRAB_API_PASS are not set in jsongrab.env.php.');
+            throw new \RuntimeException('No credentials saved on the import, and JSONGRAB_API_USER / JSONGRAB_API_PASS are not set in reizoko_jsongrab.env.php.');
         }
 
         return ['user' => $user, 'pass' => $pass];

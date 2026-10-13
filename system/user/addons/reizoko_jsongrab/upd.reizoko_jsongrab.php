@@ -2,7 +2,7 @@
 
 use ExpressionEngine\Service\Addon\Installer;
 
-class Jsongrab_upd extends Installer
+class Reizoko_jsongrab_upd extends Installer
 {
     public $version = '1.0.0';
     public $has_cp_backend = 'y';
@@ -39,14 +39,14 @@ class Jsongrab_upd extends Installer
 
         ee()->dbforge->add_field($fields);
         ee()->dbforge->add_key('import_id', true);
-        ee()->dbforge->create_table('jsongrab_imports');
+        ee()->dbforge->create_table('reizoko_jsongrab_imports');
 
         return parent::install();
     }
 
     public function uninstall()
     {
-        ee()->dbforge->drop_table('jsongrab_imports');
+        ee()->dbforge->drop_table('reizoko_jsongrab_imports');
 
         return parent::uninstall();
     }

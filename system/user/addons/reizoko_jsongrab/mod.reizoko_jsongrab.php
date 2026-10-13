@@ -5,6 +5,6 @@
  * EE's CLI installer requires a mod.*.php file to be present before it will
  * run the upd.*.php installer, even for CP-only addons.
  */
-class Jsongrab
+class Reizoko_jsongrab
 {
 }

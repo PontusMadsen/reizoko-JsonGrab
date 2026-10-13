@@ -14,7 +14,7 @@ table.jg-table tr:last-child td { border-bottom: none; }
 
 <div class="jg-wrap">
 	<div class="jg-actions">
-		<a class="button" href="<?= ee('CP/URL')->make('addons/settings/jsongrab/create') ?>">New Import</a>
+		<a class="button" href="<?= ee('CP/URL')->make('addons/settings/reizoko_jsongrab/create') ?>">New Import</a>
 	</div>
 
 	<?php if (empty($imports)): ?>
@@ -43,11 +43,11 @@ table.jg-table tr:last-child td { border-bottom: none; }
 				<?php endif; ?>
 			</td>
 			<td class="jg-row-actions">
-				<?= form_open(ee('CP/URL')->make('addons/settings/jsongrab/run/' . $import->import_id), ['style' => 'display:inline']) ?>
+				<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run/' . $import->import_id), ['style' => 'display:inline']) ?>
 					<button type="submit" style="background:none;border:none;color:#5D63F1;cursor:pointer;padding:0;font-size:13px;">Run</button>
 				<?= form_close() ?>
-				<a href="<?= ee('CP/URL')->make('addons/settings/jsongrab/edit/' . $import->import_id) ?>">Edit</a>
-				<?= form_open(ee('CP/URL')->make('addons/settings/jsongrab/delete/' . $import->import_id), ['style' => 'display:inline']) ?>
+				<a href="<?= ee('CP/URL')->make('addons/settings/reizoko_jsongrab/edit/' . $import->import_id) ?>">Edit</a>
+				<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/delete/' . $import->import_id), ['style' => 'display:inline']) ?>
 					<button type="submit" onclick="return confirm('Delete this import?')" style="background:none;border:none;color:#c0392b;cursor:pointer;padding:0;font-size:13px;">Delete</button>
 				<?= form_close() ?>
 			</td>

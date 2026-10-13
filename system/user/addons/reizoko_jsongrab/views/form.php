@@ -59,7 +59,7 @@
 		</div>
 
 		<div class="jg-row">
-			<label>Basic Auth Username <span class="jg-desc">optional — leave both blank to use <code>system/user/config/jsongrab.env.php</code> instead. Filling these in is less safe (stored in the database) but saves working in two places.</span></label>
+			<label>Basic Auth Username <span class="jg-desc">optional — leave both blank to use <code>system/user/config/reizoko_jsongrab.env.php</code> instead. Filling these in is less safe (stored in the database) but saves working in two places.</span></label>
 			<input type="text" name="basic_auth_user" value="<?= htmlspecialchars($import->basic_auth_user ?? '', ENT_QUOTES, 'UTF-8') ?>" autocomplete="off">
 		</div>
 
@@ -163,8 +163,8 @@
 	'savedTitle' => $import->title_json_path ?? '',
 	'savedUrlTitle' => $import->url_title_json_path ?? '',
 	'savedKey' => $import->key_json_path ?? '',
-	'fieldsUrl' => ee('CP/URL')->make('addons/settings/jsongrab/fields')->compile(),
-	'previewUrl' => ee('CP/URL')->make('addons/settings/jsongrab/preview')->compile(),
+	'fieldsUrl' => ee('CP/URL')->make('addons/settings/reizoko_jsongrab/fields')->compile(),
+	'previewUrl' => ee('CP/URL')->make('addons/settings/reizoko_jsongrab/preview')->compile(),
 ]) ?>
 </script>
 
