@@ -8,7 +8,7 @@ table.jg-table th, table.jg-table td { text-align: left; padding: 10px 14px; bor
 table.jg-table th { font-weight: 600; background: rgba(0,0,0,0.02); }
 table.jg-table tr:last-child td { border-bottom: none; }
 .jg-summary { font-size: 0.85em; color: #8f90b6; }
-.jg-btns { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.jg-btns { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; }
 .jg-btns form { margin: 0; }
 .jg-btn { display: inline-block; box-sizing: border-box; font: inherit; font-size: 13px; font-weight: 500; line-height: 1; padding: 7px 14px; border-radius: 4px; border: 1px solid var(--ee-panel-border, #dfe0ef); background: transparent; color: var(--ee-text-primary, #0d0d19); text-decoration: none; cursor: pointer; transition: background-color .15s, border-color .15s; }
 .jg-btn:hover { background: rgba(93,99,241,0.08); border-color: #5D63F1; }
@@ -17,12 +17,11 @@ table.jg-table tr:last-child td { border-bottom: none; }
 .jg-btn-run:disabled { opacity: .55; cursor: default; background: #5D63F1; border-color: #5D63F1; }
 .jg-btn-delete { color: #c0392b; }
 .jg-btn-delete:hover { background: rgba(192,57,43,0.08); border-color: #c0392b; }
-.jg-progress { display: none; align-items: center; gap: 10px; margin-top: 10px; }
-.jg-progress.is-on { display: flex; }
-.jg-bar { flex: 0 0 160px; height: 6px; border-radius: 3px; background: rgba(93,99,241,0.18); overflow: hidden; }
+.jg-progress { display: flex; align-items: center; gap: 10px; margin-left: 8px; visibility: hidden; }
+.jg-progress.is-on { visibility: visible; }
+.jg-bar { flex: 0 0 120px; height: 6px; border-radius: 3px; background: rgba(93,99,241,0.18); overflow: hidden; }
 .jg-fill { height: 100%; width: 0; background: #5D63F1; transition: width .25s ease-out; }
-.jg-count { font-size: 12px; font-variant-numeric: tabular-nums; color: #8f90b6; }
-.jg-result { font-size: 12px; color: #8f90b6; margin-top: 6px; }
+.jg-count { min-width: 64px; font-size: 12px; font-variant-numeric: tabular-nums; color: #8f90b6; }
 .jg-empty { padding: 24px; text-align: center; color: #8f90b6; }
 </style>
 
@@ -48,7 +47,7 @@ table.jg-table tr:last-child td { border-bottom: none; }
 				<div class="jg-summary"><?= htmlspecialchars($import->url, ENT_QUOTES, 'UTF-8') ?></div>
 			</td>
 			<td><?= htmlspecialchars($channels[$import->channel_id] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
-			<td>
+			<td class="jg-lastrun">
 				<?php if ($import->last_run_date): ?>
 					<?= ee()->localize->human_time($import->last_run_date) ?>
 					<div class="jg-summary"><?= htmlspecialchars($import->last_run_summary ?: '', ENT_QUOTES, 'UTF-8') ?></div>
@@ -68,12 +67,11 @@ table.jg-table tr:last-child td { border-bottom: none; }
 					<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/delete/' . $import->import_id)) ?>
 						<button type="submit" class="jg-btn jg-btn-delete" onclick="return confirm('Delete this import?')">Delete</button>
 					<?= form_close() ?>
+					<div class="jg-progress">
+						<div class="jg-bar"><div class="jg-fill"></div></div>
+						<span class="jg-count"></span>
+					</div>
 				</div>
-				<div class="jg-progress">
-					<div class="jg-bar"><div class="jg-fill"></div></div>
-					<span class="jg-count"></span>
-				</div>
-				<div class="jg-result"></div>
 			</td>
 		</tr>
 		<?php endforeach; ?>
@@ -91,19 +89,27 @@ document.querySelectorAll('form.jg-run-form').forEach(function (form) {
 		var progress = cell.querySelector('.jg-progress');
 		var fill = cell.querySelector('.jg-fill');
 		var count = cell.querySelector('.jg-count');
-		var result = cell.querySelector('.jg-result');
+		var lastRun = cell.parentNode.querySelector('.jg-lastrun');
 		var totals = { created: 0, updated: 0, error_count: 0 };
 		var errors = [];
 
 		button.disabled = true;
 		fill.style.width = '0';
 		count.textContent = 'Starting';
-		result.textContent = '';
 		progress.classList.add('is-on');
+
+		function setLastRun(when, text) {
+			lastRun.textContent = '';
+			lastRun.appendChild(document.createTextNode(when));
+			var note = document.createElement('div');
+			note.className = 'jg-summary';
+			note.textContent = text;
+			lastRun.appendChild(note);
+		}
 
 		function fail(message) {
 			progress.classList.remove('is-on');
-			result.textContent = 'Failed: ' + message;
+			setLastRun('Failed', message);
 			button.disabled = false;
 		}
 
@@ -130,8 +136,8 @@ document.querySelectorAll('form.jg-run-form').forEach(function (form) {
 
 					if (!res.done) { return step(res.next_offset); }
 
-					result.textContent = 'Created ' + totals.created + ', updated ' + totals.updated + ', ' + totals.error_count + ' error(s).'
-						+ (errors.length ? ' ' + errors.slice(0, 5).join(' | ') : '');
+					setLastRun('Just now', 'Created ' + totals.created + ', updated ' + totals.updated + ', ' + totals.error_count + ' error(s).'
+						+ (errors.length ? ' ' + errors.slice(0, 5).join(' | ') : ''));
 					button.disabled = false;
 				})
 				.catch(function (err) { fail(err.message); });
