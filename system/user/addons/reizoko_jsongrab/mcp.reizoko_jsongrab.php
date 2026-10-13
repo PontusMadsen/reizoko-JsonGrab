@@ -186,9 +186,16 @@ class Reizoko_jsongrab_mcp
         $imports = ee()->db->order_by('name', 'asc')->get('reizoko_jsongrab_imports')->result();
         $channels = $this->channelNames();
 
+        $actionId = $this->cronActionId();
+        $cronUrls = [];
+        foreach ($imports as $import) {
+            $cronUrls[$import->import_id] = $this->cronUrl($import, $actionId);
+        }
+
         $vars = [
             'imports' => $imports,
             'channels' => $channels,
+            'cron_urls' => $cronUrls,
             'base_url' => $this->base_url,
             'cp_page_title' => 'JsonGrab Imports',
         ];
@@ -242,7 +249,10 @@ class Reizoko_jsongrab_mcp
 
         $fieldTabs = $import ? $this->channelFieldTabs($import->channel_id) : [];
 
+        $cronUrl = $import ? $this->cronUrl($import, $this->cronActionId()) : null;
+
         $vars = [
+            'cron_url' => $cronUrl,
             'import' => $import,
             'field_map' => $fieldMap,
             'field_tabs' => $fieldTabs,
@@ -292,6 +302,7 @@ class Reizoko_jsongrab_mcp
             'status' => ee()->input->post('status') ?: 'open',
             'author_id' => (int) ee()->input->post('author_id') ?: 1,
             'field_map' => json_encode($map),
+            'cron_secret' => trim((string) ee()->input->post('cron_secret')) ?: null,
         ];
 
         // Leave the password field blank on edit to keep the saved value.
@@ -420,6 +431,32 @@ class Reizoko_jsongrab_mcp
         }
 
         ee()->output->send_ajax_response($result);
+    }
+
+    /**
+     * Public URL a cron job can call to run an import, or null when the
+     * import has no secret yet or the add-on hasn't been updated to register
+     * the action. Includes the index page: a bare "/?ACT=" is answered by
+     * index.html on many setups.
+     */
+    private function cronUrl($import, $actionId)
+    {
+        if (!$actionId || empty($import->cron_secret)) {
+            return null;
+        }
+
+        return rtrim(ee()->config->item('site_url'), '/') . '/' . ltrim((string) ee()->config->item('site_index'), '/')
+            . '?ACT=' . $actionId . '&id=' . $import->import_id . '&key=' . rawurlencode($import->cron_secret);
+    }
+
+    private function cronActionId()
+    {
+        $action = ee('Model')->get('Action')
+            ->filter('class', 'Reizoko_jsongrab')
+            ->filter('method', 'run')
+            ->first();
+
+        return $action ? $action->action_id : null;
     }
 
     private function channelNames()

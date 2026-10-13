@@ -4,8 +4,12 @@ use ExpressionEngine\Service\Addon\Installer;
 
 class Reizoko_jsongrab_upd extends Installer
 {
-    public $version = '1.0.0';
+    public $version = '1.2.0';
     public $has_cp_backend = 'y';
+
+    public $actions = [
+        ['method' => 'run', 'csrf_exempt' => 1],
+    ];
 
     public function __construct()
     {
@@ -33,6 +37,7 @@ class Reizoko_jsongrab_upd extends Installer
             'basic_auth_user' => array('type' => 'varchar', 'constraint' => 255, 'null' => true),
             'basic_auth_pass' => array('type' => 'varchar', 'constraint' => 255, 'null' => true),
             'field_map' => array('type' => 'text', 'null' => true),
+            'cron_secret' => array('type' => 'varchar', 'constraint' => 100, 'null' => true),
             'last_run_date' => array('type' => 'int', 'constraint' => 10, 'unsigned' => true, 'null' => true),
             'last_run_summary' => array('type' => 'text', 'null' => true),
         );
@@ -42,6 +47,17 @@ class Reizoko_jsongrab_upd extends Installer
         ee()->dbforge->create_table('reizoko_jsongrab_imports');
 
         return parent::install();
+    }
+
+    public function update($current = '')
+    {
+        if (!ee()->db->field_exists('cron_secret', 'reizoko_jsongrab_imports')) {
+            ee()->dbforge->add_column('reizoko_jsongrab_imports', [
+                'cron_secret' => array('type' => 'varchar', 'constraint' => 100, 'null' => true),
+            ]);
+        }
+
+        return parent::update($current);
     }
 
     public function uninstall()

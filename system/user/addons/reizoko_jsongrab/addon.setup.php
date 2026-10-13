@@ -5,7 +5,7 @@ return array(
     'author_url'     => '',
     'name'           => 'JsonGrab',
     'description'    => 'Import channel entries from a JSON API endpoint.',
-    'version'        => '1.0.0',
+    'version'        => '1.2.0',
     'namespace'      => 'Reizoko\JsonGrab',
     'settings_exist' => true,
 

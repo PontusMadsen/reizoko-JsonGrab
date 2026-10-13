@@ -15,6 +15,9 @@ table.jg-table tr:last-child td { border-bottom: none; }
 .jg-btns form { margin: 0; }
 .jg-btn { display: inline-block; box-sizing: border-box; font: inherit; font-size: 13px; font-weight: 500; line-height: 1; padding: 7px 14px; border-radius: 4px; border: 1px solid var(--ee-panel-border, #dfe0ef); background: transparent; color: var(--ee-text-primary, #0d0d19); text-decoration: none; cursor: pointer; transition: background-color .15s, border-color .15s; }
 .jg-btn:hover { background: rgba(93,99,241,0.08); border-color: #5D63F1; }
+.jg-btn-icon { padding: 7px 9px; display: inline-flex; align-items: center; }
+.jg-btn-icon svg { width: 14px; height: 14px; display: block; }
+.jg-btn-icon.is-copied { color: #2f7d4f; border-color: #2f7d4f; }
 .jg-btn-run { background: #5D63F1; border-color: #5D63F1; color: #fff; }
 .jg-btn-run:hover { background: #4a50d4; border-color: #4a50d4; }
 .jg-btn-run:disabled { opacity: .55; cursor: default; background: #5D63F1; border-color: #5D63F1; }
@@ -64,6 +67,11 @@ table.jg-table tr:last-child td { border-bottom: none; }
 						<div class="jg-bar"><div class="jg-fill"></div></div>
 						<span class="jg-count"></span>
 					</div>
+					<?php if (!empty($cron_urls[$import->import_id])): ?>
+					<button type="button" class="jg-btn jg-btn-icon jg-copy" data-url="<?= htmlspecialchars($cron_urls[$import->import_id], ENT_QUOTES, 'UTF-8') ?>" title="Copy cron URL (includes the secret)" aria-label="Copy cron URL">
+						<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5a2.5 2.5 0 0 0 3.5 0l2.5-2.5a2.5 2.5 0 0 0-3.5-3.5l-.7.7"/><path d="M9.5 6.5a2.5 2.5 0 0 0-3.5 0L3.5 9a2.5 2.5 0 0 0 3.5 3.5l.7-.7"/></svg>
+					</button>
+					<?php endif; ?>
 					<?= form_open(ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run/' . $import->import_id), [
 						'class' => 'jg-run-form',
 						'data-chunk-url' => ee('CP/URL')->make('addons/settings/reizoko_jsongrab/run_chunk/' . $import->import_id)->compile(),
@@ -83,6 +91,34 @@ table.jg-table tr:last-child td { border-bottom: none; }
 </div>
 
 <script>
+document.querySelectorAll('.jg-copy').forEach(function (btn) {
+	btn.addEventListener('click', function () {
+		var url = btn.dataset.url;
+
+		function done() {
+			var original = btn.title;
+			btn.classList.add('is-copied');
+			btn.title = 'Copied';
+			setTimeout(function () { btn.classList.remove('is-copied'); btn.title = original; }, 1500);
+		}
+
+		// navigator.clipboard needs https; local .test sites are usually http.
+		if (navigator.clipboard && window.isSecureContext) {
+			navigator.clipboard.writeText(url).then(done);
+			return;
+		}
+
+		var area = document.createElement('textarea');
+		area.value = url;
+		area.style.position = 'fixed';
+		area.style.opacity = '0';
+		document.body.appendChild(area);
+		area.select();
+		try { document.execCommand('copy'); done(); } catch (e) {}
+		document.body.removeChild(area);
+	});
+});
+
 document.querySelectorAll('form.jg-run-form').forEach(function (form) {
 	form.addEventListener('submit', function (e) {
 		e.preventDefault();

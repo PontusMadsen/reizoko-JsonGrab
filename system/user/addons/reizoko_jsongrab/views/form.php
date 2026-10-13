@@ -149,6 +149,23 @@
 		<div id="jg-tab-panels"></div>
 	</div>
 
+	<div class="jg-section">
+		<h3>Run from a URL</h3>
+		<p class="jg-desc">For cron jobs. Set a secret and save, then call the URL shown here. Without a secret, this import can't be triggered by URL.</p>
+
+		<div class="jg-row">
+			<label>Cron Secret <span class="jg-desc">a long random string; treat it like a password</span></label>
+			<input type="text" name="cron_secret" value="<?= htmlspecialchars($import->cron_secret ?? '', ENT_QUOTES, 'UTF-8') ?>" autocomplete="off">
+		</div>
+
+		<?php if (!empty($cron_url)): ?>
+			<div class="jg-row">
+				<label>URL</label>
+				<input type="text" readonly value="<?= htmlspecialchars($cron_url, ENT_QUOTES, 'UTF-8') ?>" onclick="this.select()">
+			</div>
+		<?php endif; ?>
+	</div>
+
 	<div class="jg-actions">
 		<button type="submit" name="save" value="1">Save Import</button>
 	</div>
