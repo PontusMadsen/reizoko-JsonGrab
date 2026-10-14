@@ -113,7 +113,7 @@ Set **Use HTTP Basic Auth** to Yes on the import and leave its username and pass
 
 ## More from Reizoko
 
-JsonGrab is part of the [Reizoko add-ons](https://www.reizoko.jp/en/addons.html).
+More about [JsonGrab](https://www.reizoko.jp/en/addons/jsongrab.html) on reizoko.jp, which is also home to the other [Reizoko add-ons](https://www.reizoko.jp/en/addons.html).
 
 ## License
 
